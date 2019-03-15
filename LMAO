@@ -6,13 +6,32 @@ def Load(myfile):
         List.append(w)
     return(List)
 OVERALL = Load('PYTHONTEST.py')
+FUnctionList = []
 
 def makeIfCaps():
     global OVERALL
     List = OVERALL
     NewList = []
     for i in List:
-        w = i.replace('if','IF')
+        w = i.replace(' if ',' IF ')
+        NewList.append(w)
+    OVERALL = NewList
+
+def makePercent():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('%','MOD')
+        NewList.append(w)
+    OVERALL = NewList
+
+def makeDivision():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('//','DIV')
         NewList.append(w)
     OVERALL = NewList
 
@@ -31,6 +50,15 @@ def arrows():
     NewList = []
     for i in List:
         w = i.replace(' = ',' ← ')
+        NewList.append(w)
+    OVERALL = NewList
+
+def brek():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('break','BREAK')
         NewList.append(w)
     OVERALL = NewList
 
@@ -86,10 +114,12 @@ def expandfor():
     for i in List:
         if 'FOR' in i:
             LIST = i.split(' ')
-            LIST2 = LIST[3][6:11]
-            LIST2 = LIST2.split(',')
+            LIST2 = LIST[3]
+            LIST2 = LIST2[6::]
+            LIST4 = LIST2.split(',')
+
             NAamo = ''
-            for i in LIST2[1]:
+            for i in LIST4[1]:
                 if i in ['0','1','2','3','4','5','6','7','8','9']:
                     NAamo += i
             NewLine = LIST[0] + ' ' + LIST[1] + ' = ' + LIST2[0] + ' TO ' + NAamo + ':'
@@ -117,15 +147,93 @@ def expandfor():
         NewList2.append(count)
     currentindent = - 1
     position = 0
-    for j in range(len(NewList3)):
-        i = NewList3[j]
-        if NewList2[j] == currentindent:
-            position = j
-        if i == 1:
-            currentindent = NewList2[j]
-    NewList.insert(position,'NEXT ' + NAME)
+    if CHECK == 1:
+        for j in range(len(NewList3)):
+            i = NewList3[j]
+            if i == 1:
+                currentindent = NewList2[j]
+            if NewList2[j] == currentindent:
+                position = j
+
+        NewList.insert(position+5,'NEXT ' + NAME)
 
 
+    OVERALL = NewList
+
+def CaseOf():
+    global OVERALL
+    check = 0
+    for i in OVERALL:
+        if 'elif' in i:
+            check = 1
+    if check == 0:
+        return 'Yeet'
+    position = 0
+    for i in range(len(OVERALL)):
+        j = OVERALL[i]
+        if 'IF' in j:
+            position = i
+            List = j.split(' ')
+            variable = List[1]
+            break
+    List = []
+    line1 = 'CASE OF ' + variable
+    List.append(line1)
+    while True:
+        position = position + 2
+        if 'elif' not in OVERALL[position]:
+            break
+        count = 0
+        for i in OVERALL[position]:
+            if i == ' ':
+                count += 1
+            else:
+                break
+        line = ''
+        for i in range(count + 4):
+            line += ' '
+        line += 'CASE'
+        w = OVERALL[position].split(' ')
+        w.remove('elif')
+        x = ''
+        for i in w:
+            x += i
+        position += 2
+        line += x
+        line += ' '
+        line += OVERALL[position]
+
+        List.append(line)
+    print(List)
+
+def Function():
+    global FUnctionList
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        if 'def ' in i:
+            w = i.split(' ')
+            line = 'PROCEDURE '  + w[1]
+            x = w[1]
+
+            FUnctionList.append(x.split('(')[0])
+        else:
+            line = i
+        NewList.append(line)
+    OVERALL = NewList
+
+def AddCALL():
+    global FUnctionList
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        if (i.split('(')[0]) in FUnctionList:
+            newline = 'CALL ' + i
+        else:
+            newline = i
+        NewList.append(newline)
     OVERALL = NewList
 
 def Final():
@@ -135,9 +243,17 @@ def Final():
     makeWhileCaps()
     arrows()
     changeequal()
+    makeDivision()
+    makePercent()
     PRINT()
     expandfor()
+    comment()
+    Function()
+    AddCALL()
+    brek()
+    #print(OVERALL)
     for i in OVERALL:
         print(i)
 
 Final()
+
