@@ -1,0 +1,143 @@
+def Load(myfile):
+    List = []
+    w = open(myfile,'r')
+    for line in w:
+        w = str(line)
+        List.append(w)
+    return(List)
+OVERALL = Load('PYTHONTEST.py')
+
+def makeIfCaps():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('if','IF')
+        NewList.append(w)
+    OVERALL = NewList
+
+def makeElseCaps():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('else','ELSE')
+        NewList.append(w)
+    OVERALL = NewList
+
+def arrows():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace(' = ',' ← ')
+        NewList.append(w)
+    OVERALL = NewList
+
+def comment():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('#','//')
+        NewList.append(w)
+    OVERALL = NewList
+
+def makeWhileCaps():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('while','WHILE')
+        NewList.append(w)
+    OVERALL = NewList
+
+def makeForCaps():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('for','FOR')
+        NewList.append(w)
+    OVERALL = NewList
+
+def changeequal():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace(' == ',' = ')
+        NewList.append(w)
+    OVERALL = NewList
+
+def PRINT():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        w = i.replace('print','OUTPUT')
+        NewList.append(w)
+    OVERALL = NewList
+
+def expandfor():
+    global OVERALL
+    List = OVERALL
+    NewList = []
+    for i in List:
+        if 'FOR' in i:
+            LIST = i.split(' ')
+            LIST2 = LIST[3][6:11]
+            LIST2 = LIST2.split(',')
+            NAamo = ''
+            for i in LIST2[1]:
+                if i in ['0','1','2','3','4','5','6','7','8','9']:
+                    NAamo += i
+            NewLine = LIST[0] + ' ' + LIST[1] + ' = ' + LIST2[0] + ' TO ' + NAamo + ':'
+            NewList.append(NewLine)
+            NewList.append(' ')
+        else:
+            NewList.append(i)
+    NewList2 = []
+    NewList3 = []
+    NAME = ''
+    CHECK = 0
+    for i in List:
+        count = 0
+        if 'FOR' in i:
+            CHECK = 1
+            NewList3.append(1)
+            List = i.split(' ')
+            NAME = List[1]
+        else:
+            NewList3.append(0)
+        for j in i:
+            if j != ' ':
+                break
+            count += 1
+        NewList2.append(count)
+    currentindent = - 1
+    position = 0
+    for j in range(len(NewList3)):
+        i = NewList3[j]
+        if NewList2[j] == currentindent:
+            position = j
+        if i == 1:
+            currentindent = NewList2[j]
+    NewList.insert(position,'NEXT ' + NAME)
+
+
+    OVERALL = NewList
+
+def Final():
+    makeIfCaps()
+    makeElseCaps()
+    makeForCaps()
+    makeWhileCaps()
+    arrows()
+    changeequal()
+    PRINT()
+    expandfor()
+    for i in OVERALL:
+        print(i)
+
+Final()
